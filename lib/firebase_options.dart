@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -47,32 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBgs8LleVNsfC3om5Z86En1ec6yGOrOakM',
-    appId: '1:934901241041:web:abc1f7902dfa1d06e621f0',
-    messagingSenderId: '934901241041',
-    projectId: 'gallery-flutter-dev',
-    authDomain: 'gallery-flutter-dev.firebaseapp.com',
-    databaseURL: 'https://gallery-flutter-dev.firebaseio.com',
-    storageBucket: 'gallery-flutter-dev.appspot.com',
-    measurementId: 'G-HBB5H8CECM',
+    apiKey: 'AIzaSyBeHCCgW7KvSdHEwGszPgaYD9MrByEjrjc',
+    appId: '1:176703737429:web:c5c48140e2c32d59594edc',
+    messagingSenderId: '176703737429',
+    projectId: 'fire-d-demo',
+    authDomain: 'fire-d-demo.firebaseapp.com',
+    storageBucket: 'fire-d-demo.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCX61HWVIf6k2XZYk43DxWAqE2tp9kwmEY',
-    appId: '1:934901241041:android:d393674f33a48678e621f0',
-    messagingSenderId: '934901241041',
-    projectId: 'gallery-flutter-dev',
-    databaseURL: 'https://gallery-flutter-dev.firebaseio.com',
-    storageBucket: 'gallery-flutter-dev.appspot.com',
+    apiKey: 'AIzaSyBbBo1D83DvoyceVkbOTd71j8nTIDa_Z78',
+    appId: '1:176703737429:android:d723124596f6ae8d594edc',
+    messagingSenderId: '176703737429',
+    projectId: 'fire-d-demo',
+    storageBucket: 'fire-d-demo.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDMJsEYAcKIwBUajVyLlaQ1Z7xAQabZTjo',
-    appId: '1:934901241041:ios:8d4c8bde3db3391fe621f0',
-    messagingSenderId: '934901241041',
-    projectId: 'gallery-flutter-dev',
-    databaseURL: 'https://gallery-flutter-dev.firebaseio.com',
-    storageBucket: 'gallery-flutter-dev.appspot.com',
+    apiKey: 'AIzaSyCKvwSq8SLaNtTX341QjQE55SjrgsBOoSw',
+    appId: '1:176703737429:ios:1e52143aeb481913594edc',
+    messagingSenderId: '176703737429',
+    projectId: 'fire-d-demo',
+    storageBucket: 'fire-d-demo.appspot.com',
     iosBundleId: 'io.flutter.demo.gallery',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCKvwSq8SLaNtTX341QjQE55SjrgsBOoSw',
+    appId: '1:176703737429:ios:1a7ffd9a7662675e594edc',
+    messagingSenderId: '176703737429',
+    projectId: 'fire-d-demo',
+    storageBucket: 'fire-d-demo.appspot.com',
+    iosBundleId: 'io.flutter.demo.gallery.RunnerTests',
   );
 }

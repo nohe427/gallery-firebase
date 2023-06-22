@@ -11,6 +11,35 @@ class Category {
     required this.name,
   });
 
+  static Category byName(String name) {
+    switch (name) {
+      case 'ACCESSORIES':
+        return categoryAccessories;
+      case 'CLOTHING':
+        return categoryClothing;
+      case 'HOME':
+        return categoryHome;
+      default:
+        return categoryAccessories;
+    }
+  }
+
+  static String toName(Category category) {
+    if (category == categoryAccessories) {
+      return 'ACCESSORIES';
+    }
+
+    if (category == categoryClothing) {
+      return 'CLOTHING';
+    }
+
+    if (category == categoryHome) {
+      return 'HOME';
+    }
+
+    return 'ALL';
+  }
+
   // A function taking a BuildContext as input and
   // returns the internationalized name of the category.
   final String Function(BuildContext) name;
@@ -65,4 +94,25 @@ class Product {
   String get assetName => '$id-0.jpg';
 
   String get assetPackage => 'shrine_images';
+
+  static Product fromMap(Map<String, dynamic> map) {
+    return Product(
+        id: map['id'] as int,
+        category: Category.byName(map['category'] as String),
+        isFeatured: false,
+        name: (context) => map['name'] as String,
+        price: map['price'] as int,
+        assetAspectRatio: map['assetAspectRatio'] as double);
+  }
+
+  Map<String, dynamic> toMap(BuildContext context) {
+    return <String, dynamic>{
+      'category': Category.toName(category),
+      'id': id,
+      'isFeatured': isFeatured,
+      'name': name(context),
+      'price': price,
+      'assetAspectRatio': assetAspectRatio,
+    };
+  }
 }

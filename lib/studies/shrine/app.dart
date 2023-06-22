@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:gallery/appstate.dart';
 import 'package:gallery/data/gallery_options.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/studies/shrine/backdrop.dart';
@@ -18,6 +19,7 @@ import 'package:gallery/studies/shrine/routes.dart' as routes;
 import 'package:gallery/studies/shrine/scrim.dart';
 import 'package:gallery/studies/shrine/supplemental/layout_cache.dart';
 import 'package:gallery/studies/shrine/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ShrineApp extends StatefulWidget {
@@ -150,34 +152,49 @@ class _ShrineAppState extends State<ShrineApp>
     );
 
     return ScopedModel<AppStateModel>(
-      model: _model.value,
-      child: WillPopScope(
-        onWillPop: _onWillPop,
-        child: MaterialApp(
-          // By default on desktop, scrollbars are applied by the
-          // ScrollBehavior. This overrides that. All vertical scrollables in
-          // the gallery need to be audited before enabling this feature,
-          // see https://github.com/flutter/gallery/issues/541
-          scrollBehavior:
-              const MaterialScrollBehavior().copyWith(scrollbars: false),
-          restorationScopeId: 'shrineApp',
-          title: 'Shrine',
-          debugShowCheckedModeBanner: false,
-          initialRoute: ShrineApp.loginRoute,
-          routes: {
-            ShrineApp.loginRoute: (context) => const LoginPage(),
-            ShrineApp.homeRoute: (context) => home,
-          },
-          theme: shrineTheme.copyWith(
-            platform: GalleryOptions.of(context).platform,
-          ),
-          // L10n settings.
-          localizationsDelegates: GalleryLocalizations.localizationsDelegates,
-          supportedLocales: GalleryLocalizations.supportedLocales,
-          locale: GalleryOptions.of(context).locale,
-        ),
-      ),
-    );
+        model: _model.value,
+        child: WillPopScope(
+          onWillPop: _onWillPop,
+          child: Consumer<ApplicationState>(builder: (context, appState, _) {
+            return FutureBuilder<bool>(
+                future: appState.isLoggedIn,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return MaterialApp(
+                      // By default on desktop, scrollbars are applied by the
+                      // ScrollBehavior. This overrides that. All vertical scrollables in
+                      // the gallery need to be audited before enabling this feature,
+                      // see https://github.com/flutter/gallery/issues/541
+                      scrollBehavior: const MaterialScrollBehavior()
+                          .copyWith(scrollbars: false),
+                      restorationScopeId: 'shrineApp',
+                      title: 'Shrine',
+                      debugShowCheckedModeBanner: false,
+                      initialRoute: snapshot.data!
+                          ? ShrineApp.homeRoute
+                          : ShrineApp.loginRoute,
+                      // initialRoute: appState.loggedIn.single.then((value) => return ShrineApp.homeRoute),
+                      routes: {
+                        ShrineApp.loginRoute: (context) => const LoginPage(),
+                        ShrineApp.homeRoute: (context) => home,
+                      },
+                      theme: shrineTheme.copyWith(
+                        platform: GalleryOptions.of(context).platform,
+                      ),
+                      // L10n settings.
+                      localizationsDelegates:
+                          GalleryLocalizations.localizationsDelegates,
+                      supportedLocales: GalleryLocalizations.supportedLocales,
+                      locale: GalleryOptions.of(context).locale,
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                });
+          }),
+        ));
   }
 }
 

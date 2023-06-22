@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:gallery/appstate.dart';
 import 'package:gallery/data/gallery_options.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/layout/text_scale.dart';
@@ -13,6 +14,7 @@ import 'package:gallery/studies/shrine/model/app_state_model.dart';
 import 'package:gallery/studies/shrine/model/product.dart';
 import 'package:gallery/studies/shrine/page_status.dart';
 import 'package:gallery/studies/shrine/triangle_category_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 double desktopCategoryMenuPageWidth({
@@ -139,8 +141,12 @@ class CategoryMenuPage extends StatelessWidget {
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context)
-                              .restorablePushNamed(ShrineApp.loginRoute);
+                          Provider.of<ApplicationState>(context, listen: false)
+                              .signOut()
+                              .then((value) {
+                            Navigator.of(context)
+                                .restorablePushNamed(ShrineApp.loginRoute);
+                          });
                         },
                         child: _buttonText(
                           GalleryLocalizations.of(context)!

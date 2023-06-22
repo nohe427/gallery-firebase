@@ -54,8 +54,9 @@ class RouteConfiguration {
   /// take priority.
   static List<Path> paths = [
     Path(
-      r'^' + DemoPage.baseRoute + r'/([\w-]+)$',
-      (context, match) => DemoPage(slug: match),
+      r'^',
+      (context, match) => DeferredWidget(shrine.loadLibrary,
+          () => shrine.ShrineApp()), // ignore: prefer_const_constructors
       openInSecondScreen: false,
     ),
     Path(
@@ -68,11 +69,9 @@ class RouteConfiguration {
     ),
     Path(
       r'^' + shrine_routes.homeRoute,
-      (context, match) => StudyWrapper(
-        study: DeferredWidget(shrine.loadLibrary,
-            () => shrine.ShrineApp()), // ignore: prefer_const_constructors
-      ),
-      openInSecondScreen: true,
+      (context, match) => DeferredWidget(shrine.loadLibrary,
+          () => shrine.ShrineApp()), // ignore: prefer_const_constructors
+      openInSecondScreen: false,
     ),
     Path(
       r'^' + crane_routes.defaultRoute,
@@ -109,7 +108,8 @@ class RouteConfiguration {
     ),
     Path(
       r'^/',
-      (context, match) => const RootPage(),
+      (context, match) => DeferredWidget(shrine.loadLibrary,
+          () => shrine.ShrineApp()), // ignore: prefer_const_constructors
       openInSecondScreen: false,
     ),
   ];

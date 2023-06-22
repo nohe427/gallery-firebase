@@ -6,6 +6,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:gallery/appstate.dart';
 import 'package:gallery/data/gallery_options.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/layout/image_placeholder.dart';
@@ -13,6 +14,7 @@ import 'package:gallery/layout/letter_spacing.dart';
 import 'package:gallery/layout/text_scale.dart';
 import 'package:gallery/studies/shrine/app.dart';
 import 'package:gallery/studies/shrine/theme.dart';
+import 'package:provider/provider.dart';
 
 const _horizontalPadding = 24.0;
 
@@ -30,6 +32,14 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDesktop = isDisplayDesktop(context);
 
+    Provider.of<ApplicationState>(context, listen: false)
+        .loggedIn
+        .listen((value) {
+      if (value) {
+        Navigator.of(context).restorablePushNamed(ShrineApp.homeRoute);
+      }
+    });
+
     return ApplyTextOptions(
       child: isDesktop
           ? LayoutBuilder(
@@ -38,14 +48,24 @@ class LoginPage extends StatelessWidget {
                   child: Center(
                     child: SizedBox(
                       width: desktopLoginScreenMainAreaWidth(context: context),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _ShrineLogo(),
                           SizedBox(height: 40),
-                          _UsernameTextField(),
+                          Consumer<ApplicationState>(
+                            builder: (context, value, child) {
+                              return _UsernameTextField(
+                                  value.usernameController);
+                            },
+                          ),
                           SizedBox(height: 16),
-                          _PasswordTextField(),
+                          Consumer<ApplicationState>(
+                            builder: (context, value, child) {
+                              return _PasswordTextField(
+                                  value.passwordController);
+                            },
+                          ),
                           SizedBox(height: 24),
                           _CancelAndNextButtons(),
                           SizedBox(height: 62),
@@ -64,13 +84,21 @@ class LoginPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: _horizontalPadding,
                   ),
-                  children: const [
+                  children: [
                     SizedBox(height: 80),
                     _ShrineLogo(),
                     SizedBox(height: 120),
-                    _UsernameTextField(),
+                    Consumer<ApplicationState>(
+                      builder: (context, value, child) {
+                        return _UsernameTextField(value.usernameController);
+                      },
+                    ),
                     SizedBox(height: 12),
-                    _PasswordTextField(),
+                    Consumer<ApplicationState>(
+                      builder: (context, value, child) {
+                        return _PasswordTextField(value.passwordController);
+                      },
+                    ),
                     _CancelAndNextButtons(),
                   ],
                 ),
@@ -107,7 +135,9 @@ class _ShrineLogo extends StatelessWidget {
 }
 
 class _UsernameTextField extends StatelessWidget {
-  const _UsernameTextField();
+  _UsernameTextField(this._controller);
+
+  final TextEditingController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -123,12 +153,15 @@ class _UsernameTextField extends StatelessWidget {
           letterSpacing: letterSpacingOrNone(mediumLetterSpacing),
         ),
       ),
+      controller: this._controller,
     );
   }
 }
 
 class _PasswordTextField extends StatelessWidget {
-  const _PasswordTextField();
+  _PasswordTextField(this._controller);
+
+  final TextEditingController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +177,7 @@ class _PasswordTextField extends StatelessWidget {
           letterSpacing: letterSpacingOrNone(mediumLetterSpacing),
         ),
       ),
+      controller: _controller,
     );
   }
 }
@@ -196,7 +230,10 @@ class _CancelAndNextButtons extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).restorablePushNamed(ShrineApp.homeRoute);
+              Provider.of<ApplicationState>(context, listen: false).signIn();
+              // .signIn()
+              // .then((userCredential) => Navigator.of(context)
+              //     .restorablePushNamed(ShrineApp.homeRoute));
             },
             child: Padding(
               padding: buttonTextPadding,
